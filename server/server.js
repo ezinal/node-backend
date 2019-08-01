@@ -8,6 +8,8 @@ const SurveyController = require('./survey/survey.controller');
 const { authenticate } = require('./middleware/authenticate');
 const { mongoose } = require('./db/mongoose');
 
+const port = process.env.PORT || 3000;
+
 const app = express();
 app.use(bodyParser.json());
 
@@ -43,6 +45,6 @@ app.get('/test/:id', SurveyController.show); // get a test by id
 app.delete('/test/:id', SurveyController.delete); // delete a test by id
 app.patch('/test/:id', SurveyController.edit); // update a test  
 
-app.listen(3000, () => {
-    console.log(`Listening on port 3000`);
+app.listen(port, () => {
+    console.log(`Listening on port ${port}`);
 });
