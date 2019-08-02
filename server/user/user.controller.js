@@ -32,3 +32,26 @@ module.exports.getById = function(req, res, next) {
         (e) => { res.status(400).send(); }
     );
 };
+
+module.exports.login = function(req, res, next) {
+    let body = _.pick(req.body, ['email', 'password']);
+    User.findByCredentials(body.email, body.password).then((user) => {
+        return user.generateAuthToken().then((token) => {
+            res.header('x-auth', token).send(user);
+        });
+    }).catch((e) => {
+        res.status(400).send();
+    })
+};
+
+module.exports.getCurrentUser = function(req, res, next) {
+    res.send(req.user);
+};
+
+module.exports.logout = (req, res, next) => {
+    req.user.removeToken(req.token).then(() => {
+        res.status(200).send();
+    }, () => {
+        res.status(400).send();
+    });
+};

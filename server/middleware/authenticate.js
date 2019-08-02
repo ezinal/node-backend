@@ -1,4 +1,4 @@
-var { User } = require('../user/user.controller');
+var { User } = require('../user/user.model');
 
 var authenticate = (req, res, next) => {
     var token = req.header('x-auth');

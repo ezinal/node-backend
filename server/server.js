@@ -18,8 +18,10 @@ app.use(bodyParser.json());
 // User API
 app.get('/user/:id', UserController.getById);
 // app.get('/users', UserController.all);
+app.get('/users/me', authenticate, UserController.getCurrentUser); //TODO: THIS DOESNT WORK
 app.post('/user', UserController.add); //sign up call
 app.post('/user/login', UserController.login); //login call
+app.delete('/user/me/token', authenticate, UserController.logout); //logout route (deletes token)
 // router.post('/user/edit', UserController.edit);
 // router.post('/user/updateScore', UserController.updateScore);
 // //router.get('/create', UserController.create);
