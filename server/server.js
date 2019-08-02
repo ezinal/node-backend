@@ -1,3 +1,5 @@
+require('./config/config');
+
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -8,15 +10,16 @@ const SurveyController = require('./survey/survey.controller');
 const { authenticate } = require('./middleware/authenticate');
 const { mongoose } = require('./db/mongoose');
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 const app = express();
 app.use(bodyParser.json());
 
 // User API
-// router.get('/user/:id', UserController.getById);
-// router.get('/users', UserController.all);
-// router.post('/user/add', UserController.add);
+app.get('/user/:id', UserController.getById);
+// app.get('/users', UserController.all);
+app.post('/user', UserController.add); //sign up call
+app.post('/user/login', UserController.login); //login call
 // router.post('/user/edit', UserController.edit);
 // router.post('/user/updateScore', UserController.updateScore);
 // //router.get('/create', UserController.create);
@@ -26,7 +29,7 @@ app.use(bodyParser.json());
 
 
 //CATEGORIES API
-app.post('/category/add', CategoryController.add); // add a new category
+app.post('/category', CategoryController.add); // add a new category
 app.get('/category/showAll', CategoryController.showAll); // get all categories
 app.patch('/category/:id', CategoryController.edit); // update existing category
 app.delete('/category/:id', CategoryController.delete); // delete existing category

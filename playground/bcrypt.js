@@ -1,15 +1,16 @@
 const bcrypt = require('bcryptjs');
 
-const password = 'Red12345!'
-let hashedVal;
+const password = 'my password'
 
-bcrypt.genSalt(10, function(err, salt) {
-    bcrypt.hash("my password", salt, function(err, hash) {
-        // Store hash in your password DB.
-        bcrypt.compare('my password', hash).then((isMatch) => {
-          console.log('isMatch: ',isMatch)
-        })
-    });
+// bcrypt.genSalt(10, (err, salt) => {
+//     bcrypt.hash(password, salt, function(err, hash) {
+//         // Store hash in your password DB.
+//         console.log(hash);
+//     });
+// });
+
+let hashedPassword = '$2a$10$6gsZ5YD5jVYXUG4V7m/1U.nuXbzLIJYMH/9zyGN/bXb3gZag7w6h6';
+
+bcrypt.compare(password, hashedPassword, (err, res) => {
+    console.log(res);
 });
-
-// The hashed password is what would be stored in the database

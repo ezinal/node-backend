@@ -2,16 +2,33 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const { ObjectID } = require('mongodb');
 
 const { User } = require('./user.model');
 
+module.exports.add = function(req, res, next) {
+    var user = new User(req.body);
+
+    user.save().then(() => {
+        return user.generateAuthToken();
+    }).then((token) => {
+        res.header('x-auth', token).send(user);
+    }).catch((e) => {
+        res.status(400).send(e);
+    });
+};
+
 module.exports.getById = function(req, res, next) {
     let id = req.params.id;
-    User.findById(id).then((err, user) => {
-        if (err) {
-            err.status = 404;
-            return next(err);
-        }
-        return res.status(200).json({ message: null, data: user });
-    }).catch((e) => console.log(e));
+    if (!ObjectID.isValid(id)) {
+        console.log('Id not valid');
+        return res.status(404).send('Not a valid id!');
+    }
+    User.findById(id).then((user) => {
+        if (!user)
+            return res.status(404).send('There is no such user with given id');
+        res.send({ user });
+    }).catch(
+        (e) => { res.status(400).send(); }
+    );
 };
