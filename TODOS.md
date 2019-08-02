@@ -1,3 +1,5 @@
+0-Test authentication with token usage
+
 1- There are 2 different get requests in user routes. combine them a user either uses token or get by id
     
     This works for /path and /path/foo on express 4, note the * before ?.
