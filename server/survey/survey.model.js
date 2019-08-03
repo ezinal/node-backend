@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const _ = require('lodash');
 
 var SurveySchema = new mongoose.Schema({
     surveyName: {
@@ -16,6 +17,14 @@ var SurveySchema = new mongoose.Schema({
         required: [true, 'Survey category is a required field']
     }
 });
+
+
+SurveySchema.methods.toJSON = function() {
+    var survey = this;
+    var surveyObject = survey.toObject();
+
+    return _.pick(surveyObject, ['_id', 'surveyName', 'category']);
+}
 
 let Survey = mongoose.model('Survey', SurveySchema);
 
