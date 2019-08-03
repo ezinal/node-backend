@@ -16,13 +16,14 @@ const app = express();
 app.use(bodyParser.json());
 
 // User API
-app.get('/user/:id', UserController.getById);
+app.get('/user/me', authenticate, UserController.getCurrentUser); // get user by token //TODO: ?THIS DOESNT WORK
+app.get('/user/:id', UserController.getById); //get user by id
 // app.get('/users', UserController.all);
-app.get('/users/me', authenticate, UserController.getCurrentUser); //TODO: THIS DOESNT WORK
-app.post('/user', UserController.add); //sign up call
-app.post('/user/login', UserController.login); //login call
+app.post('/user', UserController.add); //sign up call also logs in the user (adds a token)
+app.post('/user/login', UserController.login); //login call (adds a new token)
 app.delete('/user/me/token', authenticate, UserController.logout); //logout route (deletes token)
-// router.post('/user/edit', UserController.edit);
+app.patch('/user/:id/changePassword', authenticate, UserController.changePassword);
+app.patch('/user/:id', authenticate, UserController.edit); //edit user info
 // router.post('/user/updateScore', UserController.updateScore);
 // //router.get('/create', UserController.create);
 // router.post('/user/login/', UserController.login);

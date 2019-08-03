@@ -75,7 +75,7 @@ UserSchema.methods.toJSON = function() {
     var user = this;
     var userObject = user.toObject();
 
-    return _.pick(userObject, ['id', 'name', 'surname', 'gender', 'age', 'phone', 'city', 'email', 'password']);
+    return _.pick(userObject, ['_id', 'name', 'surname', 'gender', 'age', 'phone', 'city', 'email']);
 }
 
 UserSchema.methods.generateAuthToken = function() {
@@ -99,19 +99,21 @@ UserSchema.methods.removeToken = function(token) {
     });
 };
 
-UserSchema.pre('save', function(next) {
-    var user = this;
-    if (user.isModified('password')) {
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(user.password, salt, (err, hash) => {
-                user.password = hash;
-                next();
-            })
-        })
-    } else {
-        next();
-    }
-});
+// UserSchema.pre('save', function(next) {
+//     var user = this;
+//     if (user.isModified('password')) {
+//         console.log('Password is modified hashing again.');
+//         bcrypt.genSalt(10, (err, salt) => {
+//             bcrypt.hash(user.password, salt, (err, hash) => {
+//                 user.password = hash;
+//                 console.log('hash is:', hash);
+//                 next();
+//             });
+//         });
+//     } else {
+//         next();
+//     }
+// });
 
 UserSchema.statics.findByToken = function(token) {
     var User = this;
@@ -147,6 +149,29 @@ UserSchema.statics.findByCredentials = function(email, password) {
             });
         });
     })
+};
+
+//if user changes password rehash and save to db
+// UserSchema.pre('save', function(next) {
+//     var user = this;
+
+//     if (user.isModified('password')) {
+//         bcrypt.genSalt(10, (err, salt) => {
+//             bcrypt.hash(user.password, salt, (err, hash) => {
+//                 user.password = hash;
+//                 next();
+//             });
+//         });
+//     } else {
+//         next();
+//     }
+// });
+
+UserSchema.methods.comparePassword = function(candidatePassword, cb) {
+    bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+        if (err) return cb(err);
+        cb(null, isMatch);
+    });
 };
 
 let User = mongoose.model('User', UserSchema);
